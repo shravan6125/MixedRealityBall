@@ -2,6 +2,7 @@ const videoElement = document.getElementById("video");
 const canvasElement = document.getElementById("canvas");
 const canvasCtx = canvasElement.getContext("2d");
 const ball = document.getElementById("ball");
+const switchBtn = document.getElementById("switchCam");
 
 canvasElement.width = window.innerWidth;
 canvasElement.height = window.innerHeight;
@@ -9,10 +10,25 @@ canvasElement.height = window.innerHeight;
 let currentX = window.innerWidth / 2;
 let currentY = window.innerHeight / 2;
 
+let currentFacingMode = "environment";
+
+let camera;
+
 async function setupCamera() {
 
+    // Stop previous camera
+
+    if (videoElement.srcObject) {
+
+        videoElement.srcObject
+            .getTracks()
+            .forEach(track => track.stop());
+    }
+
     const stream = await navigator.mediaDevices.getUserMedia({
-        video: true
+        video: {
+            facingMode: currentFacingMode
+        }
     });
 
     videoElement.srcObject = stream;
@@ -55,12 +71,15 @@ hands.onResults((results) => {
         canvasElement.height
     );
 
-    if (results.multiHandLandmarks &&
-        results.multiHandLandmarks.length > 0) {
+    if (
+        results.multiHandLandmarks &&
+        results.multiHandLandmarks.length > 0
+    ) {
 
         const landmarks = results.multiHandLandmarks[0];
 
         // Index finger tip
+
         const finger = landmarks[8];
 
         const x =
@@ -73,6 +92,7 @@ hands.onResults((results) => {
         moveBall(x, y);
 
         // Pinch scaling
+
         const thumb = landmarks[4];
 
         const dx = thumb.x - finger.x;
@@ -87,17 +107,43 @@ hands.onResults((results) => {
     }
 });
 
-setupCamera().then(() => {
+function startTracking() {
 
-    const camera = new Camera(videoElement, {
+    if (camera) {
+        camera.stop();
+    }
+
+    camera = new Camera(videoElement, {
+
         onFrame: async () => {
+
             await hands.send({
                 image: videoElement
             });
         },
+
         width: 1280,
         height: 720
     });
 
     camera.start();
+}
+
+// Switch camera button
+
+switchBtn.addEventListener("click", async () => {
+
+    currentFacingMode =
+        currentFacingMode === "user"
+            ? "environment"
+            : "user";
+
+    await setupCamera();
+
+    startTracking();
+});
+
+setupCamera().then(() => {
+
+    startTracking();
 });
