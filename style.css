@@ -1,0 +1,33 @@
+body {
+    margin: 0;
+    overflow: hidden;
+    background: black;
+}
+
+video {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    transform: scaleX(-1);
+}
+
+canvas {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+}
+
+#ball {
+    position: fixed;
+    width: 80px;
+    height: 80px;
+    background: red;
+    border-radius: 50%;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 40px red;
+    transition: width 0.1s, height 0.1s;
+}
