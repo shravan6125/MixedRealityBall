@@ -16,7 +16,7 @@ let camera;
 
 async function setupCamera() {
 
-    // Stop previous camera
+    // Stop old camera
 
     if (videoElement.srcObject) {
 
@@ -27,7 +27,9 @@ async function setupCamera() {
 
     const stream = await navigator.mediaDevices.getUserMedia({
         video: {
-            facingMode: currentFacingMode
+            facingMode: currentFacingMode,
+            width: { ideal: 1280 },
+            height: { ideal: 720 }
         }
     });
 
@@ -78,8 +80,6 @@ hands.onResults((results) => {
 
         const landmarks = results.multiHandLandmarks[0];
 
-        // Index finger tip
-
         const finger = landmarks[8];
 
         const x =
@@ -129,7 +129,7 @@ function startTracking() {
     camera.start();
 }
 
-// Switch camera button
+// Camera switch button
 
 switchBtn.addEventListener("click", async () => {
 
