@@ -31,3 +31,15 @@ canvas {
     box-shadow: 0 0 40px red;
     transition: width 0.1s, height 0.1s;
 }
+
+#switchCam {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 10px;
+    background: white;
+    font-size: 16px;
+}
